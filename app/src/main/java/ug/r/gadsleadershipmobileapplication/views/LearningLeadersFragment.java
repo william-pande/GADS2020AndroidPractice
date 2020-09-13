@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,6 +22,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import ug.r.gadsleadershipmobileapplication.R;
 import ug.r.gadsleadershipmobileapplication.databinding.FragmentLearningLeadersBinding;
+import ug.r.gadsleadershipmobileapplication.utils.MyDialogFragment;
 import ug.r.gadsleadershipmobileapplication.utils.RetroInterface;
 import ug.r.gadsleadershipmobileapplication.utils.RetrofitClient;
 
@@ -39,18 +41,18 @@ public class LearningLeadersFragment extends Fragment {
         this.binding = DataBindingUtil.inflate(inflater, R.layout.fragment_learning_leaders, container, false);
 
 
-        this.adapter = new InformationActivity.ItemAdapter(items, R.drawable.top_leaners, this.requireActivity());
+        this.adapter = new InformationActivity.ItemAdapter(this.items, R.drawable.top_leaners, this.requireActivity());
         this.binding.recyclerView.setLayoutManager(new LinearLayoutManager(this.requireContext()));
         this.binding.recyclerView.setAdapter(this.adapter);
 
         this.binding.swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                get_data();
+                LearningLeadersFragment.this.get_data();
             }
         });
 
-        return binding.getRoot();
+        return this.binding.getRoot();
     }
 
     @Override
@@ -75,23 +77,30 @@ public class LearningLeadersFragment extends Fragment {
                                 }
                             });
 
-                            items.clear();
+                            LearningLeadersFragment.this.items.clear();
                             for (Leader leader : leaders) {
-                                items.add(new InformationActivity.Item(
+                                LearningLeadersFragment.this.items.add(new InformationActivity.Item(
                                         leader.hours + " learning hours, " + leader.country, leader.name, leader.badgeUrl));
                             }
-                            adapter.notifyDataSetChanged();
+                            LearningLeadersFragment.this.adapter.notifyDataSetChanged();
 
                         } else {
-
+                            MyDialogFragment.newInstance(MyDialogFragment.DialogType.ERROR,
+                                    "Could not load leaders, please retry",
+                                    null, LearningLeadersFragment.this.requireActivity());
                         }
-                        binding.swipeLayout.setRefreshing(false);
+                        LearningLeadersFragment.this.binding.swipeLayout.setRefreshing(false);
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<ArrayList<Leader>> call, @NonNull Throwable t) {
-                        binding.swipeLayout.setRefreshing(false);
+                        LearningLeadersFragment.this.binding.swipeLayout.setRefreshing(false);
                         Log.e("Response", t.getLocalizedMessage(), t);
+
+                        MyDialogFragment.newInstance(MyDialogFragment.DialogType.ERROR,
+                                (t instanceof IOException) ? "Network error, please check your connection and then retry"
+                                        : t.getLocalizedMessage(),
+                                null, LearningLeadersFragment.this.requireActivity());
                     }
                 });
     }

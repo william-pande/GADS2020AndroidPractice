@@ -1,6 +1,7 @@
 package ug.r.gadsleadershipmobileapplication.views;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,6 +22,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import ug.r.gadsleadershipmobileapplication.R;
 import ug.r.gadsleadershipmobileapplication.databinding.FragmentIqLeadersBinding;
+import ug.r.gadsleadershipmobileapplication.utils.MyDialogFragment;
 import ug.r.gadsleadershipmobileapplication.utils.RetroInterface;
 import ug.r.gadsleadershipmobileapplication.utils.RetrofitClient;
 
@@ -37,17 +40,17 @@ public class SkillIQLeadersFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.binding = DataBindingUtil.inflate(inflater, R.layout.fragment_iq_leaders, container, false);
 
-        this.adapter = new InformationActivity.ItemAdapter(items, R.drawable.top_iq, this.requireActivity());
+        this.adapter = new InformationActivity.ItemAdapter(this.items, R.drawable.top_iq, this.requireActivity());
         this.binding.recyclerView.setLayoutManager(new LinearLayoutManager(this.requireContext()));
         this.binding.recyclerView.setAdapter(this.adapter);
 
         this.binding.swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                get_data();
+                SkillIQLeadersFragment.this.get_data();
             }
         });
-        return binding.getRoot();
+        return this.binding.getRoot();
     }
 
     @Override
@@ -72,20 +75,29 @@ public class SkillIQLeadersFragment extends Fragment {
                                 }
                             });
 
-                            items.clear();
+                            SkillIQLeadersFragment.this.items.clear();
                             for (Leader leader : leaders) {
-                                items.add(new InformationActivity.Item(
+                                SkillIQLeadersFragment.this.items.add(new InformationActivity.Item(
                                         leader.score + " Skill IQ Score, " + leader.country, leader.name, leader.badgeUrl));
                             }
-                            adapter.notifyDataSetChanged();
+                            SkillIQLeadersFragment.this.adapter.notifyDataSetChanged();
                         } else {
-
+                            MyDialogFragment.newInstance(MyDialogFragment.DialogType.ERROR,
+                                    "Could not load Skill IQ Leaders, please retry",
+                                    null, SkillIQLeadersFragment.this.requireActivity());
                         }
+                        SkillIQLeadersFragment.this.binding.swipeLayout.setRefreshing(false);
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<ArrayList<Leader>> call, @NonNull Throwable t) {
+                        SkillIQLeadersFragment.this.binding.swipeLayout.setRefreshing(false);
+                        Log.e("Response", t.getLocalizedMessage(), t);
 
+                        MyDialogFragment.newInstance(MyDialogFragment.DialogType.ERROR,
+                                (t instanceof IOException) ? "Network error, please check your connection and then retry"
+                                        : t.getLocalizedMessage(),
+                                null, SkillIQLeadersFragment.this.requireActivity());
                     }
                 });
     }

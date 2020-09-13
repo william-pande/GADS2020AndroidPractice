@@ -1,7 +1,9 @@
 package ug.r.gadsleadershipmobileapplication.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -14,31 +16,36 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
 import ug.r.gadsleadershipmobileapplication.R;
+import ug.r.gadsleadershipmobileapplication.databinding.ActivityInformationBinding;
 import ug.r.gadsleadershipmobileapplication.databinding.ListItemsBinding;
 
 public class InformationActivity extends AppCompatActivity {
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.tab_learners, R.string.tab_iq_learners};
+    private ActivityInformationBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_information);
+        this.binding = DataBindingUtil.setContentView(this, R.layout.activity_information);
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this.getSupportFragmentManager());
 
-        TabLayout tabs = findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
+        binding.viewPager.setAdapter(sectionsPagerAdapter);
+        binding.tabs.setupWithViewPager(binding.viewPager);
+
+        this.binding.buttonSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InformationActivity.this.startActivity(new Intent(InformationActivity.this, SubmitAppActivity.class));
+            }
+        });
     }
 
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -59,7 +66,7 @@ public class InformationActivity extends AppCompatActivity {
         @Nullable
         @Override
         public CharSequence getPageTitle(int position) {
-            return getResources().getString(TAB_TITLES[position]);
+            return InformationActivity.this.getResources().getString(TAB_TITLES[position]);
         }
 
         @Override
@@ -108,7 +115,6 @@ public class InformationActivity extends AppCompatActivity {
             Glide
                     .with(this.activity)
                     .load(item.itemURL)
-                    .centerCrop()
                     .placeholder(this.drawable)
                     .into(holder.binding.itemImage);
         }

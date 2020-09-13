@@ -1,57 +1,101 @@
 package ug.r.gadsleadershipmobileapplication.utils;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
+
+import java.io.Serializable;
+
 import ug.r.gadsleadershipmobileapplication.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MyDialogFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class MyDialogFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class MyDialogFragment extends DialogFragment {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    @Nullable
+    private Confirm confirm;
+    private String message;
+    private DialogType dialogType;
 
     public MyDialogFragment() {
-        // Required empty public constructor
+
     }
 
-
-    public static MyDialogFragment newInstance(String param1, String param2) {
-        MyDialogFragment fragment = new MyDialogFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        if (this.getArguments() != null) {
+            if (this.getArguments().containsKey("confirm")) {
+                this.confirm = (Confirm) this.getArguments().getSerializable("confirm");
+            }
+            this.message = this.getArguments().getString("message");
+            this.dialogType = (DialogType) this.getArguments().getSerializable("dialogType");
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_dialog, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ug.r.gadsleadershipmobileapplication.databinding.FragmentMyDialogBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_my_dialog, container, false);
+
+        binding.buttonYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MyDialogFragment.this.confirm != null) {
+                    MyDialogFragment.this.confirm.confirm(true);
+                    MyDialogFragment.this.dismiss();
+                }
+            }
+        });
+
+        binding.buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MyDialogFragment.this.confirm != null) {
+                    MyDialogFragment.this.confirm.confirm(false);
+                    MyDialogFragment.this.dismiss();
+                }
+            }
+        });
+
+        if (this.dialogType == DialogType.CONFIRM && this.confirm != null) {
+            binding.layoutCancel.setVisibility(View.VISIBLE);
+            binding.icon.setVisibility(View.GONE);
+        } else if (this.dialogType == DialogType.ERROR) {
+            binding.icon.setBackgroundResource(R.drawable.icon_error);
+        } else if (this.dialogType == DialogType.SUCCESS) {
+            binding.icon.setBackgroundResource(R.drawable.icon_successful);
+        } else {
+            this.dismiss();
+        }
+
+        binding.message.setText(this.message);
+
+        return binding.getRoot();
+    }
+
+    public static void newInstance(DialogType dialogType, String message, @Nullable Confirm confirm, FragmentActivity activity) {
+        MyDialogFragment dialog = new MyDialogFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("dialogType", dialogType);
+        if (confirm != null) {
+            args.putSerializable("confirm", confirm);
+        }
+        args.putString("message", message);
+        dialog.setArguments(args);
+
+        dialog.show(activity.getSupportFragmentManager(), "my_dialog");
+    }
+
+    public enum DialogType {ERROR, CONFIRM, SUCCESS}
+
+    public interface Confirm extends Serializable {
+        void confirm(boolean confirmed);
     }
 }

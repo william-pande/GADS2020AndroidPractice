@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">GADS Leadership Mobile Application</string>
-    <string name="title_activity_information">LeaderBoard</string>
+    <string name="title_activity_information">LEADERBOARD</string>
 
 
     <string name="tab_learners">Learning Leaders</string>
@@ -15,4 +15,5 @@
     <string name="email_address">Email Address</string>
     <string name="submit">Submit</string>
     <string name="project_submission">Project Submission</string>
+    <string name="yes">Yes</string>
 </resources>
