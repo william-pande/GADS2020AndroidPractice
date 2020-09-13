@@ -65,6 +65,9 @@ public class SubmitAppActivity extends AppCompatActivity {
                         @Override
                         public void confirm(boolean confirmed) {
                             if (confirmed) {
+                                SubmitAppActivity.this.binding.progressBar.setVisibility(View.VISIBLE);
+                                SubmitAppActivity.this.binding.buttonSubmit.setVisibility(View.GONE);
+
                                 RetrofitClient.getClient("https://docs.google.com/forms/d/e/")
                                         .create(RetroInterface.class)
                                         .submit_project(firstName, emailAddress, lastName, gitLink)
@@ -80,6 +83,9 @@ public class SubmitAppActivity extends AppCompatActivity {
                                                             "Submission not successful",
                                                             null, SubmitAppActivity.this);
                                                 }
+
+                                                SubmitAppActivity.this.binding.progressBar.setVisibility(View.GONE);
+                                                SubmitAppActivity.this.binding.buttonSubmit.setVisibility(View.VISIBLE);
                                             }
 
                                             @Override
@@ -89,6 +95,9 @@ public class SubmitAppActivity extends AppCompatActivity {
                                                                 ? "Network error, please check your connection and then retry"
                                                                 : t.getLocalizedMessage(),
                                                         null, SubmitAppActivity.this);
+
+                                                SubmitAppActivity.this.binding.progressBar.setVisibility(View.GONE);
+                                                SubmitAppActivity.this.binding.buttonSubmit.setVisibility(View.VISIBLE);
                                             }
                                         });
                             }
