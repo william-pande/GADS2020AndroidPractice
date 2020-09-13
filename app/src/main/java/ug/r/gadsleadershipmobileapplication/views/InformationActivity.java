@@ -10,11 +10,13 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -66,23 +68,27 @@ public class InformationActivity extends AppCompatActivity {
         }
     }
 
-    class Item {
+    static class Item {
         public String itemDesc;
         public String itemName;
+        public String itemURL;
 
-        public Item(String itemDesc, String itemName) {
+        public Item(String itemDesc, String itemName, String itemURL) {
             this.itemDesc = itemDesc;
             this.itemName = itemName;
+            this.itemURL = itemURL;
         }
     }
 
     static class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> {
         private ArrayList<Item> items;
         private int drawable;
+        private FragmentActivity activity;
 
-        public ItemAdapter(ArrayList<Item> items, int drawable) {
+        public ItemAdapter(ArrayList<Item> items, int drawable, FragmentActivity activity) {
             this.drawable = drawable;
             this.items = items;
+            this.activity = activity;
         }
 
         @NonNull
@@ -98,7 +104,13 @@ public class InformationActivity extends AppCompatActivity {
             Item item = this.items.get(position);
             holder.binding.itemName.setText(item.itemName);
             holder.binding.itemDescription.setText(item.itemDesc);
-            holder.binding.itemImage.setBackgroundResource(this.drawable);
+
+            Glide
+                    .with(this.activity)
+                    .load(item.itemURL)
+                    .centerCrop()
+                    .placeholder(this.drawable)
+                    .into(holder.binding.itemImage);
         }
 
         @Override
@@ -106,7 +118,7 @@ public class InformationActivity extends AppCompatActivity {
             return this.items.size();
         }
 
-        class MyViewHolder extends RecyclerView.ViewHolder {
+        static class MyViewHolder extends RecyclerView.ViewHolder {
             ListItemsBinding binding;
 
             public MyViewHolder(@NonNull ListItemsBinding itemView) {
