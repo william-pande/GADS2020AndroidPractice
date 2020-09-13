@@ -21,9 +21,9 @@
                 android:gravity="center_vertical">
 
                 <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/back"
                     android:layout_width="60dp"
                     android:layout_height="30dp"
-                    android:id="@+id/back"
                     android:background="@null"
                     android:scaleX="1.5"
                     android:scaleY="1.5"
@@ -111,7 +111,9 @@
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/github_link"
                     style="@style/text_input_styles"
-                    android:hint="@string/github_link" />
+                    android:layout_height="wrap_content"
+                    android:hint="@string/github_link"
+                    android:inputType="textMultiLine" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/button_submit"
