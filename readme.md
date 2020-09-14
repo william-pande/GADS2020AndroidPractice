@@ -1,6 +1,6 @@
-<img src="https://github.com/william-pande/GADS2020AndroidPractice/tree/master/screenshots/6.jpg" width="250"> | 
-<img src="https://mk0jobadderjftub56m0.kinstacdn.com/wp-content/uploads/stackoverflow.com-300.jpg" width="250"> |
-<img src="https://media.wired.com/photos/5926db217034dc5f91becd6b/master/w_582,c_limit/so-logo-s.jpg" width="250"> | 
-<img src="https://mk0jobadderjftub56m0.kinstacdn.com/wp-content/uploads/stackoverflow.com-300.jpg" width="250"> |
-<img src="https://media.wired.com/photos/5926db217034dc5f91becd6b/master/w_582,c_limit/so-logo-s.jpg" width="250"> | 
-<img src="https://github.com/william-pande/GADS2020AndroidPractice/blob/master/screenshots/6.jpg?raw=true" width="250"> |
+<img src="https://github.com/william-pande/GADS2020AndroidPractice/blob/master/screenshots/6.jpg?raw=true" width="250">
+<img src="https://github.com/william-pande/GADS2020AndroidPractice/blob/master/screenshots/1.jpg?raw=true" width="250">
+<img src="https://github.com/william-pande/GADS2020AndroidPractice/blob/master/screenshots/2.jpg?raw=true" width="250">
+<img src="https://github.com/william-pande/GADS2020AndroidPractice/blob/master/screenshots/3.jpg?raw=true" width="250">
+<img src="https://github.com/william-pande/GADS2020AndroidPractice/blob/master/screenshots/4.jpg?raw=true" width="250">
+<img src="https://github.com/william-pande/GADS2020AndroidPractice/blob/master/screenshots/5.jpg?raw=true" width="250">
